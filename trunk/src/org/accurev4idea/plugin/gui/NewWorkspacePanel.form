@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.accurev4idea.plugin.gui.NewWorkspacePanel">
+  <grid id="d5c84" binding="mainPanel" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="251" y="207" width="490" height="459"/>
+      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="3d7db" binding="workspaceName" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <xy x="0" y="0" width="490" height="46"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Enter new workspace name"/>
+        <children>
+          <component id="81579" class="javax.swing.JLabel">
+            <constraints>
+              <xy x="5" y="23" width="105" height="15"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Workspace name:"/>
+            </properties>
+          </component>
+          <component id="8215f" class="javax.swing.JTextField" binding="workspaceNameTxt">
+            <constraints>
+              <xy x="120" y="20" width="365" height="21"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <columns value="15"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="6e477" binding="workspaceFile" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <xy x="0" y="51" width="490" height="104"/>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Select workspace storage directory"/>
+        <children>
+          <component id="613fd" class="javax.swing.JLabel">
+            <constraints>
+              <xy x="5" y="25" width="140" height="15"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Workspace directory:"/>
+            </properties>
+          </component>
+          <grid id="88a44" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <xy x="5" y="50" width="480" height="21"/>
+              <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="9ff0c" class="javax.swing.JRadioButton" binding="workspaceFileSelectedRtn">
+                <constraints>
+                  <xy x="0" y="0" width="21" height="21"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="72a78" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <xy x="5" y="76" width="480" height="23"/>
+              <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="9e0d1" class="javax.swing.JRadioButton" binding="workspaceFileNewRtn">
+                <constraints>
+                  <xy x="0" y="0" width="102" height="23"/>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+                </constraints>
+                <properties>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <component id="f065c" class="javax.swing.JButton" binding="workspaceFileBtn">
+            <constraints>
+              <xy x="155" y="20" width="330" height="25"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1"/>
+            </constraints>
+            <properties>
+              <enabled value="false"/>
+              <text value="Select directory"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="23725" binding="workspaceNewline" row-count="1" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <xy x="0" y="160" width="490" height="48"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Select new line termination"/>
+        <children>
+          <component id="75cae" class="javax.swing.JRadioButton" binding="workspaceNewlineDefaultRtn">
+            <constraints>
+              <xy x="5" y="20" width="74" height="23"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <selected value="true"/>
+              <text value="Default"/>
+            </properties>
+          </component>
+          <component id="48347" class="javax.swing.JRadioButton" binding="workspaceNewlineUnixRtn">
+            <constraints>
+              <xy x="140" y="20" width="53" height="23"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Unix"/>
+            </properties>
+          </component>
+          <component id="8aa38" class="javax.swing.JRadioButton" binding="workspaceNewlineMacRtn">
+            <constraints>
+              <xy x="254" y="20" width="46" height="23"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Mac"/>
+            </properties>
+          </component>
+          <component id="a10ea" class="javax.swing.JRadioButton" binding="workspaceNewlineWindowsRtn">
+            <constraints>
+              <xy x="361" y="20" width="74" height="23"/>
+              <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Windows"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="c60e3" binding="workspaceLocking" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <xy x="0" y="213" width="490" height="48"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="1" fill="1"/>
+        </constraints>
+        <properties/>
+        <border type="none" title="Select the locking mode"/>
+        <children>
+          <component id="cf61a" class="javax.swing.JRadioButton" binding="workspaceLockingDefaultRtn">
+            <constraints>
+              <xy x="5" y="20" width="74" height="23"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <selected value="true"/>
+              <text value="Default"/>
+            </properties>
+          </component>
+          <component id="7c669" class="javax.swing.JRadioButton" binding="workspaceLockingAnchorRtn">
+            <constraints>
+              <xy x="166" y="20" width="67" height="23"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Anchor"/>
+            </properties>
+          </component>
+          <component id="4a6cc" class="javax.swing.JRadioButton" binding="workspaceLockingExclusiveRtn">
+            <constraints>
+              <xy x="320" y="20" width="88" height="23"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0"/>
+            </constraints>
+            <properties>
+              <text value="Exclusive"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <vspacer id="34ff0">
+        <constraints>
+          <xy x="239" y="261" width="11" height="198"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2"/>
+        </constraints>
+      </vspacer>
+    </children>
+  </grid>
+</form>
