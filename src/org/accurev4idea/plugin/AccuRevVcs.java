@@ -4,6 +4,7 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.AbstractVcs;
+import com.intellij.openapi.vcs.ProjectLevelVcsManager;
 import com.intellij.openapi.vcs.VcsException;
 import org.accurev4idea.plugin.gui.AccuRevConfigurable;
 import org.jetbrains.annotations.NotNull;
@@ -13,9 +14,11 @@ public class AccuRevVcs extends AbstractVcs implements ProjectComponent {
   public static String NAME = "AccuRev";
 
   private AccuRevConfigurable configurable;
+  private AccuRevConfiguration configuration;
 
-  public AccuRevVcs(Project project) {
+  public AccuRevVcs(Project project, AccuRevConfiguration configuration) {
     super(project, NAME);
+    this.configuration = configuration;
   }
 
   @Override
@@ -29,7 +32,7 @@ public class AccuRevVcs extends AbstractVcs implements ProjectComponent {
   }
 
   public static AccuRevVcs getInstance(Project project) {
-    return project.getComponent(AccuRevVcs.class);
+    return project != null && !project.isDisposed()?(AccuRevVcs) ProjectLevelVcsManager.getInstance(project).findVcsByName(NAME):null;
   }
 
   @Override
@@ -62,7 +65,7 @@ public class AccuRevVcs extends AbstractVcs implements ProjectComponent {
 
   @Override
   protected void start() throws VcsException {
-    configurable = new AccuRevConfigurable(myProject);
+    configurable = new AccuRevConfigurable(myProject, configuration);
     super.start();
   }
 

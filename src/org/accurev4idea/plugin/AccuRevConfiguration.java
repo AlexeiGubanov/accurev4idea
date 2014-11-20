@@ -1,25 +1,19 @@
 package org.accurev4idea.plugin;
 
+import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.RoamingType;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.DefaultJDOMExternalizer;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.util.xmlb.XmlSerializerUtil;
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @State(
   name = "AccuRevConfiguration",
-  storages = { @Storage(id = "default", file = StoragePathMacros.WORKSPACE_FILE) }
-)
-public class AccuRevConfiguration implements ProjectComponent, PersistentStateComponent<AccuRevConfiguration> {
+  //@Storage(file = "$APP_CONFIG$/vcs.xml"),
+  storages = { @Storage(file = "$APP_CONFIG$/accurev.xml", roamingType = RoamingType.PER_PLATFORM)})
+public class AccuRevConfiguration implements PersistentStateComponent<AccuRevConfiguration> {
 
   private String accurevExecPath;
   private boolean showAccuRevOutput = true;
@@ -47,32 +41,6 @@ public class AccuRevConfiguration implements ProjectComponent, PersistentStateCo
 
   public void setEnableAutoAdd(boolean enableAutoAdd) {
     this.enableAutoAdd = enableAutoAdd;
-  }
-
-  @Override
-  public void projectOpened() {
-    // foo
-  }
-
-  @Override
-  public void projectClosed() {
-    // foo
-  }
-
-  @Override
-  public void initComponent() {
-    // foo
-  }
-
-  @Override
-  public void disposeComponent() {
-    // foo
-  }
-
-  @NotNull
-  @Override
-  public String getComponentName() {
-    return this.getClass().getSimpleName();
   }
 
   @Override
@@ -106,6 +74,10 @@ public class AccuRevConfiguration implements ProjectComponent, PersistentStateCo
 
   @Override
   public void loadState(AccuRevConfiguration state) {
+    if (state == null) {
+      state = new AccuRevConfiguration();
+    }
     XmlSerializerUtil.copyBean(state, this);
   }
+
 }
