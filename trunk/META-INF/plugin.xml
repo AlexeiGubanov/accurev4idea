@@ -25,25 +25,20 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <vcs name="AccuRev" vcsClass="org.accurev4idea.plugin.AccuRevVcs"/>
+        <vcs name="AccuRev" displayName="AccuRev" vcsClass="org.accurev4idea.plugin.AccuRevVcs"/>
         <checkoutProvider implementation="org.accurev4idea.plugin.providers.AccuRevCheckoutProvider" />
+        <applicationService serviceInterface="org.accurev4idea.plugin.AccuRevConfiguration"
+                            serviceImplementation="org.accurev4idea.plugin.AccuRevConfiguration"/>
     </extensions>
 
     <application-components>
-        <component>
-            <interface-class>com.intellij.openapi.vcs.CheckoutProvider</interface-class>
-            <implementation-class>org.accurev4idea.plugin.providers.AccuRevCheckoutProvider</implementation-class>
-        </component>
+
     </application-components>
 
     <project-components>
         <component>
             <interface-class>org.accurev4idea.plugin.AccuRevVcs</interface-class>
             <implementation-class>org.accurev4idea.plugin.AccuRevVcs</implementation-class>
-            <option name="workspace" value="true"/>
-        </component>
-        <component>
-            <implementation-class>org.accurev4idea.plugin.AccuRevConfiguration</implementation-class>
             <option name="workspace" value="true"/>
         </component>
     </project-components>

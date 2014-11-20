@@ -44,12 +44,12 @@ public class AccuRevConfigurable extends BaseConfigurable {
   private JCheckBox enableAutoAddChk;
 
   private Project project;
-  private AccuRevConfiguration config;
+  private AccuRevConfiguration configuration;
 
-  public AccuRevConfigurable(Project project) {
+  public AccuRevConfigurable(Project project, AccuRevConfiguration configuration) {
     this.project = project;
-    config = project.getComponent(AccuRevConfiguration.class);
-    loadConfigurationFrom(config);
+    this.configuration = configuration;
+    loadConfigurationFrom(configuration);
 
     // check if accurev path in loaded config is not empty, if it's not empty
     // make sure to set the accurev executable accordingly, otherwise modify the
@@ -156,19 +156,19 @@ public class AccuRevConfigurable extends BaseConfigurable {
 
   @Override
   public void apply() throws ConfigurationException {
-    saveConfigurationTo(config);
+    saveConfigurationTo(configuration);
   }
 
   @Override
   public void reset() {
-    loadConfigurationFrom(config);
+    loadConfigurationFrom(configuration);
   }
 
   @Override
   public boolean isModified() {
     AccuRevConfiguration tmp = new AccuRevConfiguration();
     saveConfigurationTo(tmp);
-    return !tmp.equals(config);
+    return !tmp.equals(configuration);
   }
 
   @Override
