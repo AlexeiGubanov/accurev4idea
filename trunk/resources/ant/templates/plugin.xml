@@ -1,0 +1,34 @@
+<!--
+TODO: Edit file build.properties to enable tokens substitution,
+TODO: tokens look like @token@ will replaced in ANT building 
+-->
+<idea-plugin url="@project.url@">
+    <vendor url="@project.author.url@" email="@project.author.email@">@project.author@</vendor>
+    <name>@project.title@</name>
+    <description>@project.description@</description>
+    <version build="@build.number@" build-date="@build.date@">@project.version@</version>
+    <change-notes><![CDATA[<html><pre>@project.version.notes@</pre></html>]]></change-notes>
+    <idea-version min="4.5" max="4.5" since-build="2210"/>
+    <!-- Application components of the plugin -->
+    <application-components>
+        <component>
+            <interface-class><!-- Put here interface full class name --></interface-class>
+            <implementation-class><!-- Put here implementation full class name --></implementation-class>
+        </component>
+        <component>
+            <implementation-class><!-- Put here implementation full class name --></implementation-class>
+        </component>
+    </application-components>
+
+    <!-- Project components of the plugin -->
+    <project-components>
+        <component>
+            <interface-class><!-- Put here interface full class name --></interface-class>
+            <implementation-class><!-- Put here implementation full class name --></implementation-class>
+        </component>
+        <component>
+            <implementation-class><!-- Put here implementation full class name --></implementation-class>
+        </component>
+    </project-components>
+</idea-plugin>
+

@@ -1,0 +1,9 @@
+accurev4idea 0.0.4 Build #12 (July 12, 2005)
+----
+   * This plugin is work in progress, by no means it's complete, therefore PLEASE USE AT YOUR OWN RISK!
+   * Added support for status updates in preparation for refactoring functionality. 
+   * Added couple of new actions ("update", "add" and "revert").
+   * Fixed a bug where incorrect location of accurev binary would trigger plugin as unusable (reported by Jerry Chabot)  
+   * Fixed a bug where working offline will also trigger plugin as unusable (reported by Jerry Chabot)
+
+

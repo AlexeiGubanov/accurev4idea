@@ -1,0 +1,338 @@
+<!-- Universal startupScript for building IDEA plugin project -->
+<!--
+WARNING: You need to specify bcel.jar, jdom.jar and java2.jar in ANT classpath, if
+         you used GUI Designer forms in your project and want to compile it in common ANT
+         build process.
+
+NOTE: This build file has follow options files:
+      - build.properties - This file contains all settings for ANT script, please modify it.
+-->
+<project basedir="." default="make" name="accurev4idea">
+    <property name="project.resources" value="resources"/>
+    <property name="project.ant" value="${project.resources}/ant"/>
+    <property name="project.lib" value="lib"/>
+    <property name="project.src" value="src"/>
+    <property name="project.test-src" value="test-java"/>
+    <property name="project.build" value="build"/>
+    <property name="project.build.notes" value="changes.log"/>
+    <property name="project.build.changes" value="${project.ant}/generated/CHANGES.txt"/>
+    <property name="project.build.changes.template" value="${project.ant}/templates/CHANGES.txt"/>
+    <property name="project.build.src" value="${project.build}/${project.src}"/>
+    <property name="project.build.classes" value="${project.build}/classes"/>
+    <property name="project.build.resources" value="${project.build}/resources"/>
+    <property name="project.build.temp" value="${project.build}/temp"/>
+
+    <!-- Help -->
+    <target name="help">
+        <echo>
+      ${ant.version} (JDK ${ant.java.version})
+      ${ant.file}:
+        make      - Build binaries (for usual development) packed into ZIP also
+        shapshot  - Make sources snapshot for sharing or moving to another storage
+        release   - Make full release build with build incrementing, notes
+                    generation, packing into ZIP and sources snapshot ZIP. Be sure,
+                    that you have build-notes.txt not empty file prepared for this
+                    release build.
+        </echo>
+    </target>
+
+    <!-- Binaries -->
+    <target name="make" depends="__compile.ui, __native2ascii">
+        <pathconvert property="jar.classpath.lib" pathsep=" ">
+            <map from="${basedir}${file.separator}${project.lib}${file.separator}" to=""/>
+            <path>
+                <fileset dir="${basedir}">
+                    <include name="${project.lib}/*.jar"/>
+                </fileset>
+            </path>
+        </pathconvert>
+
+        <!-- Build main jar with classes and XML descriptors in META-INF -->
+        <jar jarfile="${project.build}/${project.name}/lib/${project.jar.classes.prefix}.jar" compress="true" filesonly="true">
+            <manifest>
+                <attribute name="Class-Path" value="${jar.classpath.lib}"/>
+                <attribute name="Build-Number" value="${build.number}"/>
+                <attribute name="Build-Date" value="${build.date}"/>
+            </manifest>
+            <metainf dir="${project.build.src}/META-INF">
+                <include name="*.xml"/>
+            </metainf>
+            <fileset dir="${project.build.classes}">
+                <include name="**/*.*"/>
+            </fileset>
+            <fileset dir="${project.build.src}">
+                <include name="**/*.ico"/>
+                <include name="**/*.png"/>
+            </fileset>
+        </jar>
+
+        <!-- Binary files -->
+        <copy todir="${project.build.resources}" includeemptydirs="no">
+            <fileset dir="${project.src}">
+                <exclude name="META-INF/*.xml"/>
+                <exclude name="**/*.properties"/>
+                <exclude name="**/*.txt"/>
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.form"/>
+                <!-- Photoshop sources -->
+                <exclude name="**/*.psd"/>
+                <exclude name="**/package.html"/>
+                <exclude name="**/${project.native2ascii.pattern}" if="build.native2ascii"/>
+            </fileset>
+        </copy>
+        <!-- Text files -->
+        <copy todir="${project.build.resources}" includeemptydirs="no">
+            <fileset dir="${project.src}">
+                <include name="**/*.xml"/>
+                <include name="**/*.properties"/>
+                <include name="**/*.txt"/>
+                <exclude name="META-INF/*.xml"/>
+                <exclude name="**/${project.native2ascii.pattern}" if="build.native2ascii"/>
+            </fileset>
+            <filterset refid="project.filter"/>
+        </copy>
+        <condition property="build.jar.resources.update">
+            <and>
+                <available file="${project.build}/${project.name}/lib/${project.jar.resources.prefix}.jar" type="file"/>
+            </and>
+        </condition>
+        <zip zipfile="${project.build}/${project.name}/lib/${project.jar.resources.prefix}.jar" basedir="${project.build.resources}" compress="true" update="${build.jar.resources.update}" whenempty="skip">
+            <include name="**/*.*"/>
+        </zip>
+
+        <!-- Generate files from templates -->
+        <copy todir="${project.build}/${project.name}" flatten="true">
+            <fileset dir="${project.ant}">
+                <include name="generated/*.txt"/>
+            </fileset>
+            <filterset refid="project.filter"/>
+        </copy>
+
+        <!-- Copy project lib JARs -->
+        <copy todir="${project.build}/${project.name}/lib" flatten="true">
+            <fileset dir="${basedir}">
+                <include name="${project.lib}/*.jar"/>
+            </fileset>
+        </copy>
+        <antcall target="__build.api"/>
+
+        <!-- Build ZIP distributive -->
+        <zip zipfile="${project.build}/${project.prefix}.zip" basedir="${project.build}" compress="true">
+            <include name="${project.name}/**/*.*"/>
+        </zip>
+
+        <!-- Clean up -->
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${project.build}">
+                <include name="**/**"/>
+                <exclude name="${project.prefix}*.zip"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- Source -->
+    <target name="snapshot" depends="__init">
+        <zip zipfile="${project.build}/${project.prefix}-src.zip" basedir="${basedir}" compress="true">
+            <include name="*.*"/>
+            <include name="${project.src}/**/*.*"/>
+            <include name="${project.src}/**/*"/>
+            <include name="${project.lib}/**/*.*"/>
+            <include name="${project.lib}/**/*"/>
+            <include name="ant/**/*.*"/>
+            <include name="ant/**/*"/>
+        </zip>
+    </target>
+
+    <!-- Distribute -->
+    <target name="deploy" depends="make, __deploy"/>
+
+    <!-- Distribute -->
+    <target name="release" depends="__build.increment, make, snapshot"/>
+
+    <!-- Convert native files -->
+    <target name="__native2ascii" depends="__init" if="project.native2ascii">
+        <mkdir dir="${project.build.temp}"/>
+        <!-- Perform native conversion for 'native' files -->
+        <copy todir="${project.build.temp}">
+            <mapper type="glob" from="${project.native2ascii.pattern}" to="*.native"/>
+            <fileset dir="${project.build.src}" includes="${project.native2ascii.includes}"/>
+        </copy>
+        <native2ascii src="${project.build.temp}" dest="${project.build.temp}" includes="**/*.native" encoding="${project.native2ascii.encoding}" ext=".properties"/>
+        <copy todir="${project.build.resources}">
+            <fileset dir="${project.build.temp}">
+                <include name="**/*.properties"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- Cleanup classes and build directory, create all directories -->
+    <target name="__init">
+        <!-- Load properties -->
+        <property file="ant/generated/build.properties"/>
+        <property file="build.properties"/>
+        <loadfile property="idea.build.number" srcfile="${idea.home}/build.txt"/>
+
+        <!-- Project classpath -->
+        <path id="project.classpath">
+            <fileset dir="${basedir}">
+                <include name="${project.lib}/*.jar"/>
+            </fileset>
+            <fileset dir="${idea.home}/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${idea.home}/redist">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+
+        <!-- Project filter set -->
+        <filterset id="project.filter">
+            <filter token="idea.build.number" value="${idea.build.number}"/>
+            <filter token="build.number" value="${build.number}"/>
+            <filter token="build.date" value="${build.date}"/>
+            <filter token="project.name" value="${project.name}"/>
+            <filter token="project.url" value="${project.url}"/>
+            <filter token="project.title" value="${project.title}"/>
+            <filter token="project.description" value="${project.description}"/>
+            <filter token="project.version" value="${project.version}"/>
+            <filter token="project.author" value="${project.author}"/>
+            <filter token="project.author.url" value="${project.author.url}"/>
+            <filter token="project.author.email" value="${project.author.email}"/>
+        </filterset>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${project.build}">
+                <include name="**/**"/>
+                <include name="**/*.*"/>
+            </fileset>
+        </delete>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${project.build.classes}">
+                <include name="**/**"/>
+                <include name="**/*.*"/>
+            </fileset>
+        </delete>
+        <mkdir dir="${project.build.classes}"/>
+        <mkdir dir="${project.build.src}"/>
+        <mkdir dir="${project.build}"/>
+        <mkdir dir="${project.build}/${project.name}"/>
+        <mkdir dir="${project.build}/${project.name}/lib"/>
+        <!-- Build resources files (all other resources) -->
+        <mkdir dir="${project.build.resources}"/>
+        <taskdef name="javac-ui" classname="com.intellij.uiDesigner.ant.Javac2" classpathref="project.classpath"/>
+    </target>
+    <target name="__init.src" depends="__init">
+        <loadfile property="project.build.changes.text" srcfile="${project.build.changes}" failonerror="false"/>
+        <copy todir="${project.build.src}" overwrite="false">
+            <fileset dir="${project.src}">
+                <include name="**/*.*"/>
+            </fileset>
+            <filterset refid="project.filter"/>
+            <filterset>
+                <filter token="project.version.notes" value="${project.build.changes.text}"/>
+            </filterset>
+        </copy>
+        <mkdir dir="${project.build.src}/META-INF"/>
+    </target>
+    <target name="__compile" depends="__init.src, __savant">
+        <javac destdir="${project.build.classes}" classpathref="project.classpath" source="${project.compiler.source}" target="${project.compiler.target}" debug="${project.compiler.debug}">
+            <src path="${project.build.src}"/>
+            <include name="**/*.java"/>
+        </javac>
+        <copy file="${idea.home}/lib/forms_rt.jar" todir="${project.build}/${project.name}/lib" flatten="true"/>
+    </target>
+    <target name="__compile.ui" depends="__compile">
+        <javac-ui destdir="${project.build.classes}" classpathref="project.classpath" source="${project.compiler.source}" target="${project.compiler.target}" debug="${project.compiler.debug}">
+            <src path="${project.src}"/>
+            <include name="**/*.form"/>
+        </javac-ui>
+    </target>
+    <target name="__build.increment">
+        <mkdir dir="${project.ant}/generated"/>
+        <buildnumber file="${project.ant}/generated/build.properties"/>
+        <tstamp>
+            <format property="build.date" pattern="MMMM d, yyyy" locale="en"/>
+            <format property="build.timestamp" pattern="MMMM d, yyyy" locale="en"/>
+        </tstamp>
+        <propertyfile file="${project.ant}/generated/build.properties">
+            <entry key="build.date" value="${build.date}"/>
+        </propertyfile>
+        <antcall target="__build.increment.complete"/>
+    </target>
+    <target name="__build.increment.complete" depends="__init">
+        <loadfile property="project.version.notes.stub" srcfile="${project.build.notes}">
+            <filterchain>
+                <prefixlines prefix="${project.notes.prefix}"/>
+            </filterchain>
+        </loadfile>
+        <condition property="project.version.notes.available">
+            <and>
+                <isset property="project.version.notes.stub"/>
+                <not>
+                    <equals arg1="${project.version.notes.stub}" arg2="" trim="true"/>
+                </not>
+            </and>
+        </condition>
+        <fail unless="project.version.notes.available" message="Please fill ${project.build.notes} file before all build."/>
+        <antcall target="__generate.notes"/>
+    </target>
+    <target name="__generate.notes" if="project.version.notes.available">
+        <loadfile property="project.version.notes.previous" srcfile="${project.build.changes}" failonerror="false"/>
+        <!-- If file is empty -->
+        <property name="project.version.notes.previous" value=""/>
+        <loadfile property="project.version.notes" srcfile="${project.build.changes.template}">
+            <filterchain>
+                <replacetokens>
+                    <token key="build.number" value="${build.number}"/>
+                    <token key="build.date" value="${build.date}"/>
+                    <token key="project.name" value="${project.name}"/>
+                    <token key="project.title" value="${project.title}"/>
+                    <token key="project.version" value="${project.version}"/>
+                    <token key="project.version.notes" value="${project.version.notes.stub}"/>
+                </replacetokens>
+            </filterchain>
+        </loadfile>
+        <echo message="${project.version.notes}${line.separator}${line.separator}${project.version.notes.previous}" append="false" file="${project.build.changes}"/>
+        <echo message="" append="false" file="${project.build.notes}"/>
+    </target>
+    <target name="__build.api" if="project.api">
+        <mkdir dir="${project.build}/${project.name}/lib/src"/>
+        <!-- Sources -->
+        <zip zipfile="${project.build}/${project.name}/lib/src/${project.api.prefix}.zip" basedir="${project.src}" compress="true">
+            <include name="${project.api.src.pattern.include}"/>
+            <exclude name="${project.api.src.pattern.exclude}"/>
+        </zip>
+    </target>
+    <target name="__deploy">
+        <mkdir dir="${idea.sandbox.home}"/>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${idea.sandbox.home}/plugins">
+                <include name="**/**"/>
+                <include name="**/*.*"/>
+            </fileset>
+        </delete>
+        <delete quiet="true" includeemptydirs="true">
+            <fileset dir="${idea.sandbox.home}/system/log">
+                <include name="*.*"/>
+            </fileset>
+        </delete>
+        <mkdir dir="${idea.sandbox.home}/plugins"/>
+        <unzip overwrite="true" dest="${idea.sandbox.home}/plugins" src="${project.build}/${project.prefix}.zip"/>
+        <java dir="${idea.home}/bin" jvm="${idea.sandbox.executable}" fork="true"
+            maxmemory="192m" classname="com.intellij.idea.Main">
+            <classpath path="${idea.home}/lib/idea.jar"/>
+            <classpath path="${idea.home}/lib/openapi.jar"/>
+            <classpath path="${idea.home}/lib/jdom.jar"/>
+            <classpath path="${idea.home}/lib/log4j.jar"/>
+            <jvmarg line="${idea.sandbox.args}"/>
+            <jvmarg value="-Didea.system.path=${idea.sandbox.home}/system"/>
+            <jvmarg value="-Didea.config.path=${idea.sandbox.home}/config"/>
+            <jvmarg value="-Didea.plugins.path=${idea.sandbox.home}/plugins"/>
+            <jvmarg value="-Dsun.java2d.noddraw=true"/>
+            <jvmarg value="-Didea.popup.weight=heavy"/>
+        </java>
+    </target>
+    <target name="__savant" if="${project.savant}">
+        <ant dir="${project.savant}" target="jar" inheritAll="false"/>
+        <copy todir="${project.lib}" file="${project.savant}/target/savant-main-1.0.jar"/>
+    </target>
+</project>

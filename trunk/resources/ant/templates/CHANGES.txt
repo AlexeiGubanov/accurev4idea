@@ -1,0 +1,3 @@
+@project.title@ @project.version@ Build #@build.number@ (@build.date@)
+----
+@project.version.notes@
